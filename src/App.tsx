@@ -10,7 +10,10 @@ const App: FC = () => (
     <main>
       <Container>
         <Row>
-          <Col md={{ span: 8, offset: 2 }}>
+          <Col 
+            md={{ span: 10, offset: 1 }}
+            lg={{ span: 8, offset: 2 }}  
+          >
             <TypingTest />
           </Col>
         </Row>

@@ -1,30 +1,44 @@
 import { FC, useState, useRef, ChangeEvent } from 'react';
 
 import Word from 'components/Word';
+import Timer from 'components/Timer';
 import UserInputForm from 'components/UserInputForm';
 
 import { fill, increment } from 'utils';
 
 const text = `Lorem ipsum dolor sit amet, consectetur adipisicing elit Deserunt laudantium aliquid eveniet architecto quidem quis`;
 
-const getCloud = () => text.split(' '); 
+const getCloud = () => text.split(' ').sort(() => Math.random() - 0.5); 
 
 const TypingTest: FC = () => {
   const [userInput, setUserInput] = useState('');
   const [activeWordIndex, setActiveWordIndex] = useState(0);
+  const [startCounting, setStartCounting] = useState(false);
 
   const cloud = useRef(getCloud());
 
   const [correctWords, setCorrectWords] = useState<(boolean | undefined)[]>(fill(cloud.current.length, null));
 
-  console.log(cloud.current);
-
   const handleUserInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
 
+    if (activeWordIndex === cloud.current.length) {
+      return;
+    }
+
+    if (!startCounting) {
+      setStartCounting(true);
+    }
+
     if (value.endsWith(' ')) {
+      if (activeWordIndex === cloud.current.length - 1) {
+        setStartCounting(false);
+        setUserInput('Completed');
+      } else {
+        setUserInput('');
+      }
+
       setActiveWordIndex(increment);
-      setUserInput('');
 
       setCorrectWords(correctWords => {
         const word = value.trim();
@@ -51,8 +65,11 @@ const TypingTest: FC = () => {
 
   return (
     <div className="typing-test">
+      <Timer 
+        startCounting={startCounting}
+        correctWords={correctWords.filter(Boolean).length}
+      />
       <p>{cloud.current.map(renderWord)}</p>
-      <p>{activeWordIndex}</p>
       <UserInputForm 
         value={userInput}
         onChange={handleUserInputChange}

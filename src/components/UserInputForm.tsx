@@ -11,7 +11,8 @@ const UserInputForm: FC<UserInputFormProps> = ({ value, onChange }) => (
     <Form.Group controlId="user-input">
       <Form.Control 
         type="text" 
-        value={value} 
+        value={value}
+        autoFocus 
         onChange={onChange} 
       />
     </Form.Group>
